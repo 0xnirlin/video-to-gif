@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video to GIF (high quality), in your browser</title>
+<meta name="description" content="Turn a video into a clean GIF in your browser. Uses the two-pass palette method. Your video never leaves your device.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Video to GIF (high quality), in your browser">
+<meta property="og:description" content="Turn a video into a clean GIF in your browser. Uses the two-pass palette method. Your video never leaves your device.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Video to GIF (high quality), in your browser">
+<meta name="twitter:description" content="Turn a video into a clean GIF in your browser. Your video never leaves your device.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <h1>Video to GIF</h1>
+    <p class="lead">Pick a video, choose the moment, get a clean GIF. It runs entirely in this page, so your video is never uploaded.</p>
+  </header>
+
+  <section class="card" id="pick">
+    <label class="drop" for="file" id="drop">
+      <input type="file" id="file" accept="video/*,.mp4,.mov,.webm,.mkv,.avi,.m4v">
+      <span class="drop-title">Choose a video</span>
+      <span class="drop-sub">or drop it here. MP4, MOV, WebM and more. Up to 200 MB.</span>
+    </label>
+    <p class="note" id="fileNote" role="status" hidden></p>
+  </section>
+
+  <section class="card" id="editor" hidden>
+    <div class="grid">
+      <div class="preview">
+        <video id="video" controls playsinline muted preload="metadata"></video>
+        <p class="meta" id="videoMeta"></p>
+        <button type="button" class="ghost" id="useTime">Start at the current frame</button>
+      </div>
+
+      <form class="controls" id="form" autocomplete="off">
+        <div class="field">
+          <label for="start">Start (seconds)</label>
+          <input type="number" id="start" min="0" step="0.1" value="0" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="duration">Length (seconds, max 15)</label>
+          <input type="number" id="duration" min="0.5" max="15" step="0.1" value="3" inputmode="decimal">
+        </div>
+        <div class="field">
+          <label for="width">Width: <output id="widthOut">480</output> px</label>
+          <input type="range" id="width" min="240" max="720" step="10" value="480">
+        </div>
+        <div class="field">
+          <label for="fps">Frame rate: <output id="fpsOut">15</output> fps</label>
+          <input type="range" id="fps" min="8" max="24" step="1" value="15">
+        </div>
+        <div class="field">
+          <label for="dither">Dither</label>
+          <select id="dither">
+            <option value="sierra2_4a" selected>Sierra (smooth, default)</option>
+            <option value="floyd_steinberg">Floyd-Steinberg</option>
+            <option value="bayer">Bayer (patterned)</option>
+            <option value="none">None (smallest)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="loop">Looping</label>
+          <select id="loop">
+            <option value="0" selected>Loop forever</option>
+            <option value="-1">Play once</option>
+          </select>
+        </div>
+        <div class="actions">
+          <button type="submit" id="go" class="primary" disabled>Make the GIF</button>
+          <button type="button" id="cancel" class="ghost" hidden>Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <p class="warn" id="warn" role="status" hidden></p>
+    <div class="progress" id="progressBox" hidden>
+      <div class="bar"><span id="bar"></span></div>
+      <p id="progressText" role="status" aria-live="polite"></p>
+    </div>
+    <p class="error" id="error" role="alert" hidden></p>
+  </section>
+
+  <section class="card" id="result" hidden>
+    <h2>Your GIF</h2>
+    <img id="gif" alt="The converted GIF">
+    <p class="meta" id="gifMeta"></p>
+    <a class="primary btn" id="download" download="video.gif">Download GIF</a>
+  </section>
+
+  <section class="card small">
+    <h2>How it works</h2>
+    <p>The page runs ffmpeg inside your browser (ffmpeg.wasm, single thread). It scans your frames, picks the 256 colors your clip needs, then draws every frame with that palette. That is the two-pass palette method, and it is why the colors look better than a plain conversion.</p>
+    <p>Very long or 4K clips can be slow in a browser, and a phone may run out of memory. For those, trim the clip first or use the command line tool.</p>
+  </section>
+
+  <footer>
+    <a href="https://github.com/0xnirlin/video-to-gif" target="_blank" rel="noopener">Source code and command line tool on GitHub</a>
+    <a href="https://getziztu.com/tools/video-to-gif?utm_source=huggingface&amp;utm_medium=space&amp;utm_campaign=video-to-gif" target="_blank" rel="noopener">More free video tools: Ziztu</a>
+  </footer>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
